@@ -8,21 +8,24 @@ import os
 # Load model
 @st.cache_resource
 def load_model():
-    with open('Fraud_model.pkl', 'rb') as f:
+    with open('fraud_model.pkl', 'rb') as f:
         return pickle.load(f)
 
 model = load_model()
 
 st.title("🔍 Credit Card Fraud Detection")
 st.markdown("---")
+st.write("Files in directory:")
+st.write(os.listdir('.'))
+# Load model
+@st.cache_resource
+def load_model():
+    with open('fraud_model.pkl', 'rb') as f:
+        return pickle.load(f)
 
-col1, col2, col3 = st.columns(3)
-with col1:
-    st.metric("Total Transactions", "284,807")
-with col2:
-    st.metric("Fraud Cases", "492")
-with col3:
-    st.metric("Fraud %", "0.17%")
+model = load_model()
+st.write("✅ Model loaded!")
+
 
 st.markdown("---")
 
