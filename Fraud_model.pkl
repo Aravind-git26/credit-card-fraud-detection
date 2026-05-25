@@ -18,7 +18,7 @@
       "cell_type": "code",
       "source": [
         "#load model\n",
-        "with open('fraud_model.pkl' , 'rb') as f:\n",
+        "with open('Fraud_model.pkl' , 'rb') as f:\n",
         "  model = pickle.load(f)"
       ],
       "metadata": {
