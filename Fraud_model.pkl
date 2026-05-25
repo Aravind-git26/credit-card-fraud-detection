@@ -1,114 +1,71 @@
-{
-  "nbformat": 4,
-  "nbformat_minor": 0,
-  "metadata": {
-    "colab": {
-      "provenance": []
-    },
-    "kernelspec": {
-      "name": "python3",
-      "display_name": "Python 3"
-    },
-    "language_info": {
-      "name": "python"
-    }
-  },
-  "cells": [
-    {
-      "cell_type": "code",
-      "source": [
-        "#load model\n",
-        "with open('Fraud_model.pkl' , 'rb') as f:\n",
-        "  model = pickle.load(f)"
-      ],
-      "metadata": {
-        "id": "1A8t01hsVt1k"
-      },
-      "execution_count": null,
-      "outputs": []
-    },
-    {
-      "cell_type": "code",
-      "source": [
-        "# load model\n",
-        "\n",
-        "df = pd.read_csv('creditcard.csv.zip')"
-      ],
-      "metadata": {
-        "id": "-M9Oz_xIWOz1"
-      },
-      "execution_count": null,
-      "outputs": []
-    },
-    {
-      "cell_type": "code",
-      "source": [
-        "print(\"Simulation Real-time Transactions...\")\n",
-        "print(\"=\"*50)"
-      ],
-      "metadata": {
-        "id": "T4iPIRa-WjTw"
-      },
-      "execution_count": null,
-      "outputs": []
-    },
-    {
-      "cell_type": "code",
-      "source": [
-        "# simulate streaming\n",
-        "for index, row in df.sample(20).iterrows():\n",
-        "  features = row.drop(['Class' , 'Time']).values.reshape(1,-1)\n",
-        "\n",
-        "\n",
-        "  prediction = model.predict(features)[0]\n",
-        "  probability = model.predict_proba(features)[0][1]\n",
-        "  actual = row['Class']\n",
-        "\n",
-        "  if prediction == 1:\n",
-        "    print(f\"🚨 FRAUD DETECTED! confidence: {probability:.2%} | Actual : {'Fraud' if actual==1 else 'Legit'}\")\n",
-        "\n",
-        "  else:\n",
-        "     print(f\"✅  Legitimate | confidence: {1-probability:.2%} | Actual : {'Fraud' if actual==1 else 'Legit'}\")\n",
-        "\n",
-        "  time.sleep(1)"
-      ],
-      "metadata": {
-        "id": "WJzUk76io6-Q"
-      },
-      "execution_count": null,
-      "outputs": []
-    },
-    {
-      "cell_type": "code",
-      "source": [
-        "# Mix fraud + legit\n",
-        "fraud_df = df[df['Class'] == 1].sample(5)\n",
-        "legit_df = df[df['Class'] == 0].sample(15)\n",
-        "mixed_df = pd.concat([fraud_df, legit_df]).sample(frac=1)\n",
-        "\n",
-        "# Run simulation\n",
-        "print(\"Listening for transactions...\")\n",
-        "print(\"=\"*50)\n",
-        "\n",
-        "for index, row in mixed_df.iterrows():\n",
-        "    transaction = row.to_dict()\n",
-        "    simulate_consumer(transaction)\n",
-        "    time.sleep(1)"
-      ],
-      "metadata": {
-        "id": "aK6OuGpbwnKl"
-      },
-      "execution_count": null,
-      "outputs": []
-    },
-    {
-      "cell_type": "code",
-      "source": [],
-      "metadata": {
-        "id": "WvGeg2ni7oxn"
-      },
-      "execution_count": null,
-      "outputs": []
-    }
-  ]
-}
+import streamlit as st
+import pandas as pd
+import numpy as np
+import pickle
+import plotly.express as px
+
+# Load model
+@st.cache_resource
+def load_model():
+    with open('fraud_model.pkl', 'rb') as f:
+        return pickle.load(f)
+
+model = load_model()
+
+# Title
+st.title("🔍 Credit Card Fraud Detection")
+st.markdown("---")
+
+# Metrics
+col1, col2, col3 = st.columns(3)
+with col1:
+    st.metric("Total Transactions", "284,807")
+with col2:
+    st.metric("Fraud Cases", "492")
+with col3:
+    st.metric("Fraud %", "0.17%")
+
+st.markdown("---")
+
+# Load data
+@st.cache_data
+def load_data():
+    return pd.read_csv('creditcard.csv')
+
+df = load_data()
+
+# Predict random transaction
+st.subheader("🎯 Test Random Transaction")
+if st.button("Check Random Transaction"):
+    row = df.sample(1).iloc[0]
+    features = row.drop(['Class', 'Time']).values.reshape(1, -1)
+    prediction = model.predict(features)[0]
+    probability = model.predict_proba(features)[0][1]
+    actual = row['Class']
+
+    if prediction == 1:
+        st.error(f"🚨 FRAUD DETECTED! Confidence: {probability:.2%}")
+    else:
+        st.success(f"✅ Legitimate! Confidence: {1-probability:.2%}")
+    st.info(f"Actual: {'Fraud' if actual==1 else 'Legitimate'}")
+
+st.markdown("---")
+
+# Chart
+st.subheader("📊 Transaction Distribution")
+fig = px.pie(
+    values=df['Class'].value_counts().values,
+    names=['Legitimate', 'Fraud'],
+    color_discrete_sequence=['#00CC96', '#EF553B']
+)
+st.plotly_chart(fig, use_container_width=True)
+
+# Amount distribution
+st.subheader("Transaction Amount Distribution")
+fig2 = px.histogram(
+    df, x='Amount',
+    color='Class',
+    title='Amount Distribution',
+    nbins=50
+)
+st.plotly_chart(fig2, use_container_width=True)
