@@ -7,7 +7,7 @@ import plotly.express as px
 # Load model
 @st.cache_resource
 def load_model():
-    with open('fraud_model.pkl', 'rb') as f:
+    with open('Fraud_model.pkl', 'rb') as f:
         return pickle.load(f)
 
 model = load_model()
