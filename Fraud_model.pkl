@@ -13,7 +13,7 @@ def load_model():
 model = load_model()
 
 # Title
-st.title("🔍 Credit Card Fraud Detection")
+st.title(" Credit Card Fraud Detection")
 st.markdown("---")
 
 # Metrics
@@ -35,7 +35,7 @@ def load_data():
 df = load_data()
 
 # Predict random transaction
-st.subheader("🎯 Test Random Transaction")
+st.subheader(" Test Random Transaction")
 if st.button("Check Random Transaction"):
     row = df.sample(1).iloc[0]
     features = row.drop(['Class', 'Time']).values.reshape(1, -1)
@@ -52,7 +52,7 @@ if st.button("Check Random Transaction"):
 st.markdown("---")
 
 # Chart
-st.subheader("📊 Transaction Distribution")
+st.subheader(" Transaction Distribution")
 fig = px.pie(
     values=df['Class'].value_counts().values,
     names=['Legitimate', 'Fraud'],
