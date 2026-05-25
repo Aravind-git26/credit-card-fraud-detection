@@ -1,34 +1,6 @@
-{
-  "nbformat": 4,
-  "nbformat_minor": 0,
-  "metadata": {
-    "colab": {
-      "provenance": []
-    },
-    "kernelspec": {
-      "name": "python3",
-      "display_name": "Python 3"
-    },
-    "language_info": {
-      "name": "python"
-    }
-  },
-  "cells": [
-    {
-      "cell_type": "code",
-      "source": [
-        "pandas\n",
-        "numpy\n",
-        "scikit-learn\n",
-        "xgboost\n",
-        "streamlit\n",
-        "plotly"
-      ],
-      "metadata": {
-        "id": "hBsTF1P53KGR"
-      },
-      "execution_count": null,
-      "outputs": []
-    }
-  ]
-}
+pandas
+numpy
+scikit-learn
+xgboost
+streamlit
+plotly
