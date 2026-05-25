@@ -22,7 +22,6 @@ def load_data():
     df['Class'] = np.random.choice([0, 1], n, p=[0.998, 0.002])
     return df
 
-model = load_model()
 df = load_data()
 
 st.title("🔍 Credit Card Fraud Detection")
