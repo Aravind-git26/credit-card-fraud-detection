@@ -3,20 +3,19 @@ import pandas as pd
 import numpy as np
 import pickle
 import plotly.express as px
+import os
 
 # Load model
 @st.cache_resource
 def load_model():
-    with open('Fraud_model.pkl', 'rb') as f:
+    with open('fraud_model.pkl', 'rb') as f:
         return pickle.load(f)
 
 model = load_model()
 
-# Title
-st.title(" Credit Card Fraud Detection")
+st.title("🔍 Credit Card Fraud Detection")
 st.markdown("---")
 
-# Metrics
 col1, col2, col3 = st.columns(3)
 with col1:
     st.metric("Total Transactions", "284,807")
@@ -27,15 +26,13 @@ with col3:
 
 st.markdown("---")
 
-# Load data
 @st.cache_data
 def load_data():
     return pd.read_csv('creditcard.csv')
 
 df = load_data()
 
-# Predict random transaction
-st.subheader(" Test Random Transaction")
+st.subheader("🎯 Test Random Transaction")
 if st.button("Check Random Transaction"):
     row = df.sample(1).iloc[0]
     features = row.drop(['Class', 'Time']).values.reshape(1, -1)
@@ -51,21 +48,9 @@ if st.button("Check Random Transaction"):
 
 st.markdown("---")
 
-# Chart
-st.subheader(" Transaction Distribution")
 fig = px.pie(
     values=df['Class'].value_counts().values,
     names=['Legitimate', 'Fraud'],
     color_discrete_sequence=['#00CC96', '#EF553B']
 )
 st.plotly_chart(fig, use_container_width=True)
-
-# Amount distribution
-st.subheader("Transaction Amount Distribution")
-fig2 = px.histogram(
-    df, x='Amount',
-    color='Class',
-    title='Amount Distribution',
-    nbins=50
-)
-st.plotly_chart(fig2, use_container_width=True)
