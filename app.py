@@ -92,7 +92,7 @@ if st.button("▶️ Start Live Stream"):
         # Add to results
         results.append({
             'TXN ID': f'TXN_{1000+i}',
-            'Date : now_date,
+            'Date' : now_date,
             'Time': now_time,
             'Amount': f'₹{abs(row["Amount"]):.2f}',
             'Status': '🚨 FRAUD' if prediction==1 else '✅ Legit',
