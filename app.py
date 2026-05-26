@@ -88,7 +88,6 @@ if st.button("▶️ Start Live Stream"):
 
         # Add to results
         results.append({
-            '#': i+1,
             'TXN ID': f'TXN_{1000+i}',
             'Time': now,
             'Amount': f'₹{abs(row["Amount"]):.2f}',
