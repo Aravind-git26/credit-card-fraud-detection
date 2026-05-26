@@ -23,7 +23,7 @@ def load_data():
     return df
 
 # Load both outside button
-model = load_model()
+#model = load_model()
 df = load_data()
 
 st.title("🔍 Credit Card Fraud Detection")
