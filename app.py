@@ -72,6 +72,7 @@ if st.button("▶️ Start Live Stream"):
         if prediction == 1:
             notification.error(
                 f"🚨 **FRAUD ALERT!**  \n"
+                f" Date: '{now}' \n"
                 f" Time: `{now}`  \n"
                 f" TXN ID: `TXN_{1000+i}`  \n"
                 f" Amount: `₹{abs(row['Amount']):.2f}`  \n"
@@ -80,6 +81,7 @@ if st.button("▶️ Start Live Stream"):
         else:
             notification.success(
                 f"✅ **Legitimate Transaction**  \n"
+                 f" Date: '{now}' \n"
                 f" Time: `{now}`  \n"
                 f" TXN ID: `TXN_{1000+i}`  \n"
                 f" Amount: `₹{abs(row['Amount']):.2f}`  \n"
@@ -89,6 +91,7 @@ if st.button("▶️ Start Live Stream"):
         # Add to results
         results.append({
             'TXN ID': f'TXN_{1000+i}',
+            'Date : now,
             'Time': now,
             'Amount': f'₹{abs(row["Amount"]):.2f}',
             'Status': '🚨 FRAUD' if prediction==1 else '✅ Legit',
