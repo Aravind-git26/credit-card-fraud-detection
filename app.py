@@ -61,8 +61,9 @@ if st.button("▶️ Start Live Stream"):
     results = []
 
     for i, row in stream_df.iterrows():
-
+        
         now = datetime.now().strftime('%H:%M:%S')
+        now_date = datetime.now().strftime('%d-%m-%Y')
         features = row.drop('Class').values.reshape(1, -1)
         prediction = model.predict(features)[0]
         probability = model.predict_proba(features)[0][1]
@@ -72,8 +73,8 @@ if st.button("▶️ Start Live Stream"):
         if prediction == 1:
             notification.error(
                 f"🚨 **FRAUD ALERT!**  \n"
-                f" Date: '{now}' \n"
-                f" Time: `{now}`  \n"
+                f" Date: '{now_date}' \n"
+                f" Time: `{now_time}`  \n"
                 f" TXN ID: `TXN_{1000+i}`  \n"
                 f" Amount: `₹{abs(row['Amount']):.2f}`  \n"
                 f" Confidence: `{probability:.2%}`"
@@ -81,8 +82,8 @@ if st.button("▶️ Start Live Stream"):
         else:
             notification.success(
                 f"✅ **Legitimate Transaction**  \n"
-                 f" Date: '{now}' \n"
-                f" Time: `{now}`  \n"
+                 f" Date: '{now_date}' \n"
+                f" Time: `{now_time}`  \n"
                 f" TXN ID: `TXN_{1000+i}`  \n"
                 f" Amount: `₹{abs(row['Amount']):.2f}`  \n"
                 f" Confidence: `{1-probability:.2%}`"
@@ -91,8 +92,8 @@ if st.button("▶️ Start Live Stream"):
         # Add to results
         results.append({
             'TXN ID': f'TXN_{1000+i}',
-            'Date : now,
-            'Time': now,
+            'Date : now_date,
+            'Time': now_time,
             'Amount': f'₹{abs(row["Amount"]):.2f}',
             'Status': '🚨 FRAUD' if prediction==1 else '✅ Legit',
             'Confidence': f'{probability:.2%}' if prediction==1 else f'{1-probability:.2%}',
