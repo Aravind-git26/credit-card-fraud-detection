@@ -1,16 +1,13 @@
 import streamlit as st
 import pandas as pd
 import numpy as np
-import pickle
 import plotly.express as px
+from xgboost import XGBClassifier
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import StandardScaler
 
 @st.cache_resource
-def load_model():
-    with open('Fraud_model.pkl', 'rb') as f:
-        return pickle.load(f)
-
-@st.cache_data
-def load_data():
+def train_model():
     np.random.seed(42)
     n = 10000
     df = pd.DataFrame(
@@ -18,13 +15,22 @@ def load_data():
         columns=[f'V{i}' for i in range(1, 29)]
     )
     df['Amount'] = np.random.uniform(0, 1000, n)
-    df['Time'] = np.random.uniform(0, 172800, n)
     df['Class'] = np.random.choice([0, 1], n, p=[0.998, 0.002])
-    return df
 
-# Load both outside button
-#model = load_model()
-df = load_data()
+    X = df.drop('Class', axis=1)
+    y = df['Class']
+
+    scaler = StandardScaler()
+    X['Amount'] = scaler.fit_transform(X[['Amount']])
+
+    X_train, X_test, y_train, y_test = train_test_split(
+        X, y, test_size=0.2, random_state=42)
+
+    model = XGBClassifier(n_estimators=50, random_state=42)
+    model.fit(X_train, y_train)
+    return model, df
+
+model, df = train_model()
 
 st.title("🔍 Credit Card Fraud Detection")
 st.markdown("---")
@@ -39,24 +45,19 @@ with col3:
 
 st.markdown("---")
 
-st.subheader("🎯 Test Random Transaction")
+st.subheader("Test Random Transaction")
 if st.button("Check Random Transaction"):
     row = df.sample(1).iloc[0]
-    features = row.drop(['Class', 'Time']).values.reshape(1, -1)
+    features = row.drop('Class').values.reshape(1, -1)
+    prediction = model.predict(features)[0]
+    probability = model.predict_proba(features)[0][1]
+    actual = row['Class']
 
-    try:
-        prediction = model.predict(features)[0]
-        probability = model.predict_proba(features)[0][1]
-        actual = row['Class']
-
-        if prediction == 1:
-            st.error(f"🚨 FRAUD DETECTED! Confidence: {probability:.2%}")
-        else:
-            st.success(f"✅ Legitimate! Confidence: {1-probability:.2%}")
-        st.info(f"Actual: {'Fraud' if actual==1 else 'Legitimate'}")
-
-    except Exception as e:
-        st.error(f"Error: {str(e)}")
+    if prediction == 1:
+        st.error(f"🚨 FRAUD DETECTED! Confidence: {probability:.2%}")
+    else:
+        st.success(f"✅ Legitimate! Confidence: {1-probability:.2%}")
+    st.info(f"Actual: {'Fraud' if actual==1 else 'Legitimate'}")
 
 st.markdown("---")
 
