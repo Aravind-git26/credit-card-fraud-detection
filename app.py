@@ -41,6 +41,8 @@ st.subheader("🎯 Test Random Transaction")
 if st.button("Check Random Transaction"):
     row = df.sample(1).iloc[0]
     features = row.drop(['Class', 'Time']).values.reshape(1, -1)
+
+  try:
     prediction = model.predict(features)[0]
     probability = model.predict_proba(features)[0][1]
     actual = row['Class']
