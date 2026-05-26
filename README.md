@@ -33,4 +33,4 @@ streamlit run app.py
 - data/ → Dataset
 
 # Live Demo
-[Click Here](your-streamlit-url)
+[Click Here}https://credit-card-fraud-detection-ltahbgbctpdhkpggvkgryo.streamlit.app/)
