@@ -22,6 +22,8 @@ def load_data():
     df['Class'] = np.random.choice([0, 1], n, p=[0.998, 0.002])
     return df
 
+# Load both outside button
+model = load_model()
 df = load_data()
 
 st.title("🔍 Credit Card Fraud Detection")
@@ -42,17 +44,22 @@ if st.button("Check Random Transaction"):
     row = df.sample(1).iloc[0]
     features = row.drop(['Class', 'Time']).values.reshape(1, -1)
 
-  try:
-    prediction = model.predict(features)[0]
-    probability = model.predict_proba(features)[0][1]
-    actual = row['Class']
-    if prediction == 1:
-        st.error(f"🚨 FRAUD DETECTED! Confidence: {probability:.2%}")
-    else:
-        st.success(f"✅ Legitimate! Confidence: {1-probability:.2%}")
-    st.info(f"Actual: {'Fraud' if actual==1 else 'Legitimate'}")
+    try:
+        prediction = model.predict(features)[0]
+        probability = model.predict_proba(features)[0][1]
+        actual = row['Class']
+
+        if prediction == 1:
+            st.error(f"🚨 FRAUD DETECTED! Confidence: {probability:.2%}")
+        else:
+            st.success(f"✅ Legitimate! Confidence: {1-probability:.2%}")
+        st.info(f"Actual: {'Fraud' if actual==1 else 'Legitimate'}")
+
+    except Exception as e:
+        st.error(f"Error: {str(e)}")
 
 st.markdown("---")
+
 fig = px.pie(
     values=df['Class'].value_counts().values,
     names=['Legitimate', 'Fraud'],
