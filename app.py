@@ -62,7 +62,7 @@ if st.button("▶️ Start Live Stream"):
 
     for i, row in stream_df.iterrows():
         
-        now = datetime.now().strftime('%H:%M:%S')
+        now_time = datetime.now().strftime('%H:%M:%S')
         now_date = datetime.now().strftime('%d-%m-%Y')
         features = row.drop('Class').values.reshape(1, -1)
         prediction = model.predict(features)[0]
